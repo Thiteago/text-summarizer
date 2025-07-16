@@ -25,11 +25,7 @@ module TextSummarizer
 
     class AISummarizer < BaseSummarizer
       def summarize
-        if @options[:local_ollama]
-          summarize_with_ollama
-        else
-          summarize_with_ollama
-        end
+        summarize_with_ollama
       end
 
       private
