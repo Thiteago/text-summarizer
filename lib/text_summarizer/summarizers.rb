@@ -1,3 +1,7 @@
+require 'net/http'
+require 'json'
+require 'uri'
+
 module TextSummarizer
   module Summarizers
     class BaseSummarizer
@@ -34,11 +38,8 @@ module TextSummarizer
       private
 
       def summarize_with_ollama
-        require 'ollama'
-
-        Ollama.configure do |config|
-          config.base_url = TextSummarizer.configuration.ollama_options[:base_url]
-        end
+        uri = URI("#{TextSummarizer.configuration.ollama_options[:base_url]}/api/generate")
+        req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
 
         prompt = <<~PROMPT
           Resuma o seguinte texto de forma concisa e clara, mantendo os pontos principais:
@@ -48,12 +49,16 @@ module TextSummarizer
           Resumo:
         PROMPT
 
-        response = Ollama.generate(
+        req.body = {
           model: TextSummarizer.configuration.ollama_options[:model],
-          prompt: prompt
-        )
+          prompt: prompt,
+          stream: false
+        }.to_json
 
-        response["response"]
+        res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+
+        body = JSON.parse(res.body)
+        body["response"]
       rescue => e
         raise TextSummarizer::Error, "Falha ao resumir com Ollama: #{e.message}"
       end
