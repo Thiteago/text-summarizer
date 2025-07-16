@@ -3,7 +3,7 @@ require_relative 'lib/text_summarizer'
 
 TextSummarizer.configure do |config|
   config.default_ai = true
-  config.ollama_options[:model] = 'llama2'  # ou outro modelo
+  config.ollama_options[:model] = 'llama2'
 end
 
 texto = <<~TEXT

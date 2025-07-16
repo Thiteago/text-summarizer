@@ -17,7 +17,6 @@ module TextSummarizer
 
     class SimpleSummarizer < BaseSummarizer
       def summarize
-        # Implementação simples de resumo sem IA
         sentences = @text.split('. ')
         important_sentences = sentences.select { |s| s.length > 20 && s.split.size > 5 }
         important_sentences.first(3).join('. ') + (important_sentences.size > 3 ? '...' : '')
@@ -26,11 +25,9 @@ module TextSummarizer
 
     class AISummarizer < BaseSummarizer
       def summarize
-        # Implementação com Ollama ou outra API de IA
         if @options[:local_ollama]
           summarize_with_ollama
         else
-          # Pode adicionar outros provedores de IA aqui
           summarize_with_ollama
         end
       end
